@@ -2,18 +2,14 @@
 class Api::V1::SearchController < ApplicationController
 
   def create
-    @user = User.new(user_params)
-    if @user.save {
+ 
+    @user = User.new(name: params[:name], email: params[:email],password: params[:password_digest],age: params[:age], twitter: params[:Twitter_ID],github: params[:Github_ID],image: params[:user_image_url])
+    if @user.save 
         render json: @user
-    } else {
-        render json: '{"404":"Not Found"}'
-    }
+     else 
+        render json: '{"404":"Not Found"}'  
+　  end
   end
 
-  private
 
-  def user_params
-    params.require(:user).permit(:name, :email, :password )
-
-  end
 end
