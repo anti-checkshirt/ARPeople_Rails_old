@@ -1,6 +1,7 @@
 require 'net/http'
 require 'json'
-class Api::V1::SearchController < ApplicationControllerz
+require 'securerandom'
+class Api::V1::SearchController < ApplicationController
   
     def detect_face(image_url)
         uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')
@@ -58,11 +59,14 @@ class Api::V1::SearchController < ApplicationControllerz
     end
     
     def show
-      person_id = create_person(params[:person_name])
-      image_file_names = Dir.open("public/#{params[:id]}",&:to_a)
-      image_file_names.each do |image_file_name|
-        add_face(person_id, image_file_names)
-      end
-      train()
+      image = params[:image]
+      uuid = SecureRandom.uuid
+      # フォルダ名は適当。意味はない。
+      path = "public/test_image/#{uuid}.jpeg"
+      File.binwrite(path, image.read)
+      face_id = detect_face(root_url(only_path: false)+path)
+      person_id = identify_person(face_id)[0]["candidates"][0]["personId"]
+      user = @user.where(personId: person_id)
+      render json: user
     end
 end

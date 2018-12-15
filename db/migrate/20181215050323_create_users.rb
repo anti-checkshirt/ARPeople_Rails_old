@@ -6,6 +6,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :password_digest
       t.string :Twitter_ID, default: ''
       t.string :Github_ID, default: ''
+      t.string :Person_ID, default: ''
 
       t.timestamps
     end
