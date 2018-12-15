@@ -124,11 +124,7 @@ class Api::V1::SearchController < ApplicationController
     
     def show
       person_id = create_person(params[:person_name])
-      image_file_names = []
-      dir = Dir.open("public/#{params[:id]}")
-      dir.each do  |filenames|
-        image_file_names = dir
-      end
+      image_file_names = Dir.open("public/#{params[:id]}",&:to_a)
       image_file_names.each do |image_file_name|
         add_face(person_id, image_file_names)
       end
