@@ -1,6 +1,6 @@
 require 'net/http'
 require 'json'
-class Api::V1::SearchController < ApplicationController
+class Api::V1::SearchController < ApplicationControllerz
   
     def detect_face(image_url)
         uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')

@@ -66,7 +66,8 @@ class Api::V1::SettingController < ApplicationController
             File.binwrite(path, image.read)
 
             # 以下よりAzureAPIへの処理
-            add_face(params[:id], root_url(only_path: false)+path)
+            person_id = create_person(params[:id])
+            add_face(person_id, root_url(only_path: false)+path)
         end
         train()
     end
