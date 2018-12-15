@@ -13,6 +13,6 @@
 ActiveRecord::Schema.define(version: 2018_12_15_073330) do
 
 # Could not dump table "users" because of following StandardError
-#   Unknown type 'fixnum' for column 'age'
+#   Unknown type '' for column 'age'
 
 end
