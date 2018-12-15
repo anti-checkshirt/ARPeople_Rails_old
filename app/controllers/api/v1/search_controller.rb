@@ -2,8 +2,15 @@
 class Api::V1::SearchController < ApplicationController
 
   def create
- 
-    @user = User.new(name: params[:name], email: params[:email],password: params[:password_digest],age: params[:age], twitter: params[:Twitter_ID],github: params[:Github_ID],image: params[:user_image_url])
+    @user = User.new(
+      name: params[:name],
+      email: params[:email],
+      password_digest: params[:password],
+      age: params[:age],
+      Twitter_ID: params[:twitterID],
+      Github_ID: params[:githubID],
+      user_image_url: params[:userImage]
+      )
     if @user.save 
         render json: @user
      else 
