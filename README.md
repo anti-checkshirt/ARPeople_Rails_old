@@ -1,24 +1,23 @@
-# README
+# API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+| URL               | レスポンス | パラメーター           | 内容     |
+| ----------------- | ---------- | ---------------------- | -------- |
+| api/v1/user       | User       | name, email, pass, age | 新規登録 |
+| api/v1/user_image | code 200   | [image]                | 画像登録 |
+| api/v1/search     | User       | Image                  | 検索     |
 
-Things you may want to cover:
 
-* Ruby version
 
-* System dependencies
+# テーブル
 
-* Configuration
+| User           |
+| -------------- |
+| name           |
+| email          |
+| password       |
+| age            |
+| Twitter_ID     |
+| Github_ID      |
+| Person_ID      |
+| user_image_url |
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
