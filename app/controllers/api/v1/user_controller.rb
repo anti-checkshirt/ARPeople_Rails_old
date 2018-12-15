@@ -1,5 +1,5 @@
 
-class Api::V1::SearchController < ApplicationController
+class Api::V1::UserController < ApplicationController
 
   def create
     @user = User.new(
@@ -17,6 +17,4 @@ class Api::V1::SearchController < ApplicationController
         render json: '{"404":"Not Found"}'  
 　  end
   end
-
-
 end
