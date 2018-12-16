@@ -66,7 +66,12 @@ class Api::V1::SearchController < ApplicationController
       File.binwrite(path, image.read)
       face_id = detect_face(root_url(only_path: false)+path)
       person_id = identify_person(face_id)[0]["candidates"][0]["personId"]
-      user = @user.where(personId: person_id)
-      render json: user
+      @user = User.find_by(personId: person_id)
+      if @user.nil?
+        render json: '{"404":"Not found."}'
+      else
+        render json: @user
+        File.delete(path)
+      end
     end
 end

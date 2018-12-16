@@ -68,7 +68,11 @@ class Api::V1::SettingController < ApplicationController
             # 以下よりAzureAPIへの処理
             person_id = create_person(params[:id])
             add_face(person_id, root_url(only_path: false)+path)
+            @user = User.find(params[:id])
+            @user.Person_ID = person_id
+            @user.save
         end
         train()
+        render json: '{"200":"Status OK."}'
     end
 end
