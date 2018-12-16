@@ -69,10 +69,14 @@ class Api::V1::SettingController < ApplicationController
             person_id = create_person(params[:id])
             add_face(person_id, root_url(only_path: false)+path)
             @user = User.find(params[:id])
-            @user.Person_ID = person_id
-            @user.save
+            if @user.nil?
+                render json: '{"404":"Not found."}'
+            else
+                @user.Person_ID = person_id
+                @user.save
+                train()
+                render json: '{"200":"Status OK."}'
+            end
         end
-        train()
-        render json: '{"200":"Status OK."}'
     end
 end
