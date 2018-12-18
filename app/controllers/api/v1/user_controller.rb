@@ -9,7 +9,8 @@ class Api::V1::UserController < ApplicationController
       age: params[:age],
       Twitter_ID: params[:twitterID],
       Github_ID: params[:githubID],
-      user_image_url: params[:userImage]
+      user_image_url: params[:userImage],
+      Person_ID: params[:personID]
       )
     if @user.save
         render json: @user
