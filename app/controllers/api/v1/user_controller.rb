@@ -7,10 +7,10 @@ class Api::V1::UserController < ApplicationController
       email: params[:email],
       password_digest: params[:password],
       age: params[:age],
-      Twitter_ID: params[:twitterID],
-      Github_ID: params[:githubID],
+      twitter_id: params[:twitterID],
+      github_id: params[:githubID],
       user_image_url: params[:userImage],
-      Person_ID: params[:personID]
+      person_id: params[:personID]
       )
     if @user.save
         render json: @user
