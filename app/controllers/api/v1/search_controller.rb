@@ -35,7 +35,7 @@ class Api::V1::SearchController < ApplicationController
         # Request headers
         request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
         # Request body
-        request.body = "{'personGroupId': 'test_people', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
+        request.body = "{'personGroupId': 'test_dayo', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
         p request.body
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
@@ -44,7 +44,7 @@ class Api::V1::SearchController < ApplicationController
     end
 
     def get_name_by_person_id(person_id)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons/#{person_id}")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Get.new(uri.request_uri)
@@ -64,7 +64,7 @@ class Api::V1::SearchController < ApplicationController
       # フォルダ名は適当。意味はない。
       path = "public/test_image/#{uuid}.jpeg"
       File.binwrite(path, image.read)
-      face_id = detect_face(root_url(only_path: false)+path)
+      face_id = detect_face("http://192.168.100.19:3000/"+path)
       person_id = identify_person(face_id)[0]["candidates"][0]["personId"]
       @user = User.find_by(personId: person_id)
       if @user.nil?

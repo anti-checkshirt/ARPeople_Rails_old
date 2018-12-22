@@ -5,7 +5,7 @@ class Api::V1::SettingController < ApplicationController
 
     # グループにPersonを登録
     def create_person(person_name)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/ar_people/persons")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
@@ -23,7 +23,7 @@ class Api::V1::SettingController < ApplicationController
     end
 
     def add_face(person_id, image_url)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/ar_people/persons/#{person_id}/persistedFaces")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons/#{person_id}/persistedFaces")
         uri.query = URI.encode_www_form({
             # Request parameters
             'userData' => 'user-provided data attached to the person group.',
@@ -43,7 +43,7 @@ class Api::V1::SettingController < ApplicationController
     end
 
     def train()
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/ar_people/train")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/train")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
@@ -64,7 +64,7 @@ class Api::V1::SettingController < ApplicationController
         image_key_names.each do |image|
             uuid = SecureRandom.uuid
             image = image
-            path = "./public/1/#{uuid}.jpg"
+            path = "public/1/#{uuid}.jpg"
             File.binwrite(path, image.read)
 
             # 以下よりAzureAPIへの処理
