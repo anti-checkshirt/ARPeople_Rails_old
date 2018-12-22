@@ -9,36 +9,27 @@ class Api::V1::SettingController < ApplicationController
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
-        # Request headers
         request['Content-Type'] = 'application/json'
-        # Request headers
         request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
-        # Request body
         request.body = "{'name': '#{person_name}'}"
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
         end
-        
         return JSON.parse(response.body)["personId"]
     end
 
     def add_face(person_id, image_url)
         uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons/#{person_id}/persistedFaces")
         uri.query = URI.encode_www_form({
-            # Request parameters
             'userData' => 'user-provided data attached to the person group.',
         })
         request = Net::HTTP::Post.new(uri.request_uri)
-        # Request headers
         request['Content-Type'] = 'application/json'
-        # Request headers
         request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
-        # Request body
         request.body = "{'url': '#{image_url}'}"
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
         end
-
         return response.body
     end
 
@@ -47,7 +38,6 @@ class Api::V1::SettingController < ApplicationController
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
-        # Request headers
         request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
