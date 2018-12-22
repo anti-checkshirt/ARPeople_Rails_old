@@ -57,26 +57,28 @@ class Api::V1::SettingController < ApplicationController
 
     def show
         image_key_names = [params[:image1], params[:image2], params[:image3], params[:image4], params[:image5], params[:image6], params[:image7], params[:image8], params[:image9], params[:image10]]
-        person_id = create_person(1)
+        # 本来はこっちでやる
+        # user_id = params[:user_id]
+        user_id = 1
+        person_id = create_person(user_id)
         image_key_names.each do |image|
             uuid = SecureRandom.uuid
             image = image
-            path = "public/1/#{uuid}.jpg"
+            path = "./public/1/#{uuid}.jpg"
             File.binwrite(path, image.read)
 
             # 以下よりAzureAPIへの処理
-            person_id = create_person(1)
+            person_id = create_person(user_id)
             add_face(person_id, "http://192.168.100.19:3000/"+path)
-            @user = User.find(1)
+            @user = User.find(user_id)
             if @user.nil?
                 render json: '{"404":"Not found."}'
             else
                 p @user
-                @user.Person_ID = person_id
+                @user.person_id = person_id
                 @user.save
-                train()
-                render json: '{"200":"Status OK."}'
             end
         end
+        train()
     end
 end

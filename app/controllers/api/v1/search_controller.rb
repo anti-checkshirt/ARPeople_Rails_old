@@ -2,7 +2,7 @@ require 'net/http'
 require 'json'
 require 'securerandom'
 class Api::V1::SearchController < ApplicationController
-  
+
     def detect_face(image_url)
         uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')
         uri.query = URI.encode_www_form({
@@ -35,7 +35,7 @@ class Api::V1::SearchController < ApplicationController
         # Request headers
         request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
         # Request body
-        request.body = "{'personGroupId': 'ar_people', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
+        request.body = "{'personGroupId': 'test_people', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
         p request.body
         response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
             http.request(request)
@@ -44,7 +44,7 @@ class Api::V1::SearchController < ApplicationController
     end
 
     def get_name_by_person_id(person_id)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/ar_people/persons/#{person_id}")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Get.new(uri.request_uri)
