@@ -70,7 +70,7 @@ class Api::V1::SettingController < ApplicationController
             image_params.each do |image_param|
                 uuid = SecureRandom.uuid
                 @image = image_param
-                @image_name = "#{uuid}+jpeg"
+                @image_name = "#{uuid}.jpeg"
                 save_path = "public/#{user_id}/#{@image_name}"
                 File.binwrite(save_path, @image.read)
                 add_face(person_id,
