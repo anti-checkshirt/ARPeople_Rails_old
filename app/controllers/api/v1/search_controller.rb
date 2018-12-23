@@ -44,7 +44,6 @@ class Api::V1::SearchController < ApplicationController
     end
 
     # identify_personから返ってきたperson_idから名前を取得する
-    # 使うことはないが一応書いておく
     def get_name_by_person_id(person_id)
         uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
         uri.query = URI.encode_www_form({
@@ -72,7 +71,7 @@ class Api::V1::SearchController < ApplicationController
       # フォルダが既に存在する場合は何もしない
       FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
       @save_path = "#{@save_dir}/#{@image_name}"
-      # 画像の保存s
+      # 画像の保存
       File.binwrite(@save_path, @image.read)
 
       # 顔を切り取ってその顔のface_idを受け取る
