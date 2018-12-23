@@ -5,7 +5,7 @@ class Api::V1::SettingController < ApplicationController
 
     # グループにPersonを登録
     def create_person(person_name)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
@@ -19,7 +19,7 @@ class Api::V1::SettingController < ApplicationController
     end
 
     def add_face(person_id, image_url)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/persons/#{person_id}/persistedFaces")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}/persistedFaces")
         uri.query = URI.encode_www_form({
             'userData' => 'user-provided data attached to the person group.',
         })
@@ -34,7 +34,7 @@ class Api::V1::SettingController < ApplicationController
     end
 
     def train()
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_dayo/train")
+        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/train")
         uri.query = URI.encode_www_form({
         })
         request = Net::HTTP::Post.new(uri.request_uri)
@@ -59,12 +59,13 @@ class Api::V1::SettingController < ApplicationController
                         
         # 本来はこっちでやる
         # user_id = params[:user_id]
-        user_id = 1
+        user_id = 2
         person_id = create_person(user_id)
         @user = User.find(user_id)
         if @user.nil?
             render json: '{"404":"User not found."}'
         else
+            p @user
             @user.person_id = person_id
             @user.save
             image_params.each do |image_param|
@@ -74,7 +75,7 @@ class Api::V1::SettingController < ApplicationController
                 save_path = "public/#{user_id}/#{@image_name}"
                 File.binwrite(save_path, @image.read)
                 add_face(person_id,
-                    "http://192.168.100.19:3000/api/v1/image/?user_id=#{user_id}&image_name=#{@image_name}")
+                    "http://ip:3000/api/v1/image/?user_id=#{user_id}&image_name=#{@image_name}")
             end
             train()
         end
