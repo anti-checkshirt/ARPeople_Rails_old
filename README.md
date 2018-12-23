@@ -16,8 +16,8 @@
 | email          |
 | password       |
 | age            |
-| Twitter_ID     |
-| Github_ID      |
-| Person_ID      |
+| twitter_id     |
+| github_id      |
+| person_id      |
 | user_image_url |
 
