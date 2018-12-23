@@ -84,15 +84,15 @@ class Api::V1::SettingController < ApplicationController
           # Userにperson_idを保存する
           @user.person_id = @person_id
           @user.save
-          
+
           image_params.each do |image_param|
             # ランダムな文字列を生成
             uuid = SecureRandom.uuid
             
             @image = image_param
             @image_name = "#{uuid}.jpeg"
-            save_path = "#{@save_dir}/#{@image_name}"
-            File.binwrite(save_path, @image.read)
+            @save_path = "#{@save_dir}/#{@image_name}"
+            File.binwrite(@save_path, @image.read)
             
             # 画像のURLをMSのAPIに投げる
             add_face(@person_id,
