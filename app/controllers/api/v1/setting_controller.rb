@@ -74,7 +74,8 @@ class Api::V1::SettingController < ApplicationController
         @user = User.find(user_id)
         @save_dir = "public/#{user_id}"
         if @user.nil?
-            render json: '{"404":"User not found."}'
+            # user_idがないときなので400
+            response_bad_request
         else
           @person_id = create_person(user_id)
 
@@ -101,7 +102,7 @@ class Api::V1::SettingController < ApplicationController
           
           # 学習開始
           train()
-          render json: '{"200":" Status OK."}'
+          response_success(:setting, :show)
         end
     end
 end
