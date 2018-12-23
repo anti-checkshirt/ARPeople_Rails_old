@@ -96,6 +96,7 @@ class Api::V1::SettingController < ApplicationController
 
             # 学習開始
             train()
+            render json: '{"200":" Status OK."}'
         end
     end
 end
