@@ -18,4 +18,15 @@ class Api::V1::UserController < ApplicationController
         render json: '{"404":"Not Found"}'
 　  end
   end
+  def update
+    @user = User.find_by(id: params[:id])
+    if @user.nil?
+      render json: '{"404":"User not found."}'
+    else
+      @user.twitter_id = params[:twitterID]
+      @user.github_id = params[:githubID]
+      @user.save
+      render :json '{"200":"Update User."}'
+    end
+  end
 end
