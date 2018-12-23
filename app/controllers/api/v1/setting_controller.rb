@@ -70,33 +70,38 @@ class Api::V1::SettingController < ApplicationController
                         
         # 本来はこっちでやる
         # user_id = params[:user_id]
-        user_id = 2
-        person_id = create_person(user_id)
+        user_id = 1
         @user = User.find(user_id)
+        @save_dir = "public/#{user_id}"
         if @user.nil?
             render json: '{"404":"User not found."}'
         else
-            # Userにperson_idを保存する
-            @user.person_id = person_id
-            @user.save
+          @person_id = create_person(user_id)
 
-            image_params.each do |image_param|
-                # ランダムな文字列を生成
-                uuid = SecureRandom.uuid
+          # フォルダが既に存在する場合は何もしない
+          FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
 
-                @image = image_param
-                @image_name = "#{uuid}.jpeg"
-                save_path = "public/#{user_id}/#{@image_name}"
-                File.binwrite(save_path, @image.read)
-                
-                # 画像のURLをMSのAPIに投げる
-                add_face(person_id,
-                    "http://ip:3000/api/v1/image/?user_id=#{user_id}&image_name=#{@image_name}")
-            end
-
-            # 学習開始
-            train()
-            render json: '{"200":" Status OK."}'
+          # Userにperson_idを保存する
+          @user.person_id = @person_id
+          @user.save
+          
+          image_params.each do |image_param|
+            # ランダムな文字列を生成
+            uuid = SecureRandom.uuid
+            
+            @image = image_param
+            @image_name = "#{uuid}.jpeg"
+            save_path = "#{@save_dir}/#{@image_name}"
+            File.binwrite(save_path, @image.read)
+            
+            # 画像のURLをMSのAPIに投げる
+            add_face(@person_id,
+              "http://ip:3000/api/v1/image/?user_id=#{user_id}&image_name=#{@image_name}")
+          end
+          
+          # 学習開始
+          train()
+          render json: '{"200":" Status OK."}'
         end
     end
 end
