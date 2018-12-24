@@ -1,5 +1,9 @@
 require 'securerandom'
 
+class User < ActiveRecord::Base
+  has_secure_token :access_token
+end
+
 class Api::V1::UserController < ApplicationController
   def create
     @user = User.new(
