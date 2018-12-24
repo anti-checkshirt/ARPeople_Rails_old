@@ -80,7 +80,7 @@ class Api::V1::SearchController < ApplicationController
 
         # 顔を切り取ってその顔のface_idを受け取る
         @face_id = detect_face(
-          "http://ip:3000/api/v1/image/?user_id=#{@uuid}&image_name=#{@image_name}")
+          "http://ip:3000/#{@uuid}/#{@image_name}")
         
         # 顔の判定をし、判定結果を受け取る
         @person_id = identify_person(@face_id)[0]["candidates"][0]["personId"]
