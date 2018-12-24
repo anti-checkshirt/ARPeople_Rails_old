@@ -68,7 +68,7 @@ class Api::V1::SearchController < ApplicationController
       response_bad_request
     else
       # ランダムな文字列を生成
-      @uuid = SecureRandom.urlsafe_base64(10)
+      @uuid = SecureRandom.urlsafe_base64(32)
       @image_name = "#{@uuid}.jpeg"
       @save_dir = "public/#{@uuid}"
 
