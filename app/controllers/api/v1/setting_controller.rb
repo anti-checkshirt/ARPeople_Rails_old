@@ -75,7 +75,7 @@ class Api::V1::SettingController < ApplicationController
           # パラメータにuser_idが含まれない時
           response_bad_request
         else
-          @user = User.find(user_id)
+          @user = User.find_by(id: user_id)
           @save_dir = "public/#{user_id}"
           if @user.nil?
               # userが存在しない時
