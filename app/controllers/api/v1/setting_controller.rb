@@ -68,20 +68,18 @@ class Api::V1::SettingController < ApplicationController
                         params[:image9],
                         params[:image10]]
                         
-        # 本来はこっちでやる
-        # user_id = params[:user_id]
-        user_id = 1
-        if user_id.nil?
-          # パラメータにuser_idが含まれない時
+        @uuid = params[:uuid]
+        if @uuid.nil?
+          # パラメータにuuidが含まれない時
           response_bad_request
         else
-          @user = User.find_by(id: user_id)
-          @save_dir = "public/#{user_id}"
+          @user = User.find_by(uuid: @uuid)
+          @save_dir = "public/#{@uuid}"
           if @user.nil?
               # userが存在しない時
               response_not_found('user')
           else
-            @person_id = create_person(user_id)
+            @person_id = create_person(@uuid)
 
             # フォルダが既に存在する場合は何もしない
             FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
@@ -92,16 +90,17 @@ class Api::V1::SettingController < ApplicationController
 
             image_params.each do |image_param|
               # ランダムな文字列を生成
-              uuid = SecureRandom.uuid
+              # 画像の名前
+              @image_name = SecureRandom.uuid
               
               @image = image_param
-              @image_name = "#{uuid}.jpeg"
+              @image_name = "#{@image_name}.jpeg"
               @save_path = "#{@save_dir}/#{@image_name}"
               File.binwrite(@save_path, @image.read)
               
               # 画像のURLをMSのAPIに投げる
               add_face(@person_id,
-                "http://ip:3000/#{user_id}/#{@image_name}")
+                "http://ip:3000/#{@uuid}/#{@image_name}")
             end
             
             # 学習開始
