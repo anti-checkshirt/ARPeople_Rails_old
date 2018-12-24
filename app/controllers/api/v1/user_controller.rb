@@ -6,6 +6,7 @@ end
 
 class Api::V1::UserController < ApplicationController
   def create
+    @uuid = SecureRandom.urlsafe_base64(10)
     @user = User.new(
       name: params[:name],
       email: params[:email],
@@ -14,7 +15,8 @@ class Api::V1::UserController < ApplicationController
       user_image_url: params[:userImage],
       twitter_id: nil,
       github_id: nil,
-      person_id: nil
+      person_id: nil,
+      uuid: @uuid
       )
     if @user.save
       render json: @user
