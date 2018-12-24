@@ -42,4 +42,16 @@ class Api::V1::UserController < ApplicationController
       end
     end
   end
+  
+  def login
+
+  end
+  
+  def user
+
+  end
+
+  def image
+
+  end
 end
