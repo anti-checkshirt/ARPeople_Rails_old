@@ -68,16 +68,17 @@ class Api::V1::SettingController < ApplicationController
                         params[:image9],
                         params[:image10]]
                         
-        @uuid = params[:uuid]
-        if @uuid.nil?
-          # パラメータにuuidが含まれない時
+        @access_token = requests.headers[:Authorization]
+        if @access_token.nil?
+          # パラメータにaccess_tokenが含まれない時
           response_bad_request
         else
-          @user = User.find_by(uuid: @uuid)
+          @user = User.find_by(access_token: @access_token)
+          @uuid = @user.uuid
           @save_dir = "public/#{@uuid}"
           if @user.nil?
               # userが存在しない時
-              response_not_found('user')
+              response_unauthorized
           else
             @person_id = create_person(@uuid)
 
