@@ -95,7 +95,7 @@ class Api::V1::SettingController < ApplicationController
 
       # 画像のURLをMSのAPIに投げる
       add_face(@person_id,
-        "http://ip:3000/#{@uuid}/#{@image_name}")
+        "http://192.168.11.5:3000/#{@uuid}/#{@image_name}")
     end
 
     # 学習開始

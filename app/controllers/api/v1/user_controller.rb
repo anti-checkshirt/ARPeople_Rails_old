@@ -6,7 +6,7 @@ end
 
 class Api::V1::UserController < ApplicationController
   def create
-    @uuid = SecureRandom.urlsafe_base64(10)
+    @uuid = SecureRandom.urlsafe_base64(32)
     @user = User.new(
       name: params[:name],
       email: params[:email],
