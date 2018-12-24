@@ -80,8 +80,8 @@ class Api::V1::SettingController < ApplicationController
     FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
 
     # Userにperson_idを保存する
-    @user.person_id = @person_id
-    @user.save
+    @auth_user.person_id = @person_id
+    @auth_user.save
 
     image_params.each do |image_param|
       # ランダムな文字列を生成
@@ -99,8 +99,9 @@ class Api::V1::SettingController < ApplicationController
     end
 
     # 学習開始
-    train
+    train()
     response_success(:setting, :show)
+    p root_url
   end
 
   def authenticate
