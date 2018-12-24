@@ -1,3 +1,7 @@
+# API仕様書
+今後[こちら](https://github.com/anti-checkshirt/ARPeople_Rails/wiki/API%E4%BB%95%E6%A7%98%E6%9B%B8)のエンドポストに移行
+
+
 # API
 
 | URL               | レスポンス | パラメーター           | 内容     |
