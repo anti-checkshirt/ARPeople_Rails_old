@@ -11,8 +11,8 @@ class Api::V1::UserController < ApplicationController
       name: params[:name],
       email: params[:email],
       password_digest: params[:password],
-      age: params[:age],
-      user_image_url: params[:userImage],
+      age: nil,
+      user_image_url: nil,
       twitter_id: nil,
       github_id: nil,
       person_id: nil,
@@ -42,7 +42,7 @@ class Api::V1::UserController < ApplicationController
       end
     end
   end
-  
+
   def login
 
   end
