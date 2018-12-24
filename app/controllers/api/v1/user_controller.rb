@@ -1,7 +1,12 @@
 require 'securerandom'
 
+class User < ActiveRecord::Base
+  has_secure_token :access_token
+end
+
 class Api::V1::UserController < ApplicationController
   def create
+    @uuid = SecureRandom.urlsafe_base64(10)
     @user = User.new(
       name: params[:name],
       email: params[:email],
@@ -10,23 +15,31 @@ class Api::V1::UserController < ApplicationController
       user_image_url: params[:userImage],
       twitter_id: nil,
       github_id: nil,
-      person_id: nil
+      person_id: nil,
+      uuid: @uuid
       )
     if @user.save
-        render json: @user
+      render json: @user
     else 
-        render json: '{"404":"Not Found"}'
+      response_bad_request
 　  end
   end
   def update
-    @user = User.find_by(id: params[:id])
-    if @user.nil?
-      render json: '{"404":"User not found."}'
+    @id = params[:id]
+    if @id.nil?
+      # パラメータにidが含まれていない時
+      response_bad_request
     else
-      @user.twitter_id = params[:twitterID]
-      @user.github_id = params[:githubID]
-      @user.save
-      render :json '{"200":"Update User."}'
+      @user = User.find_by(id: @id)
+      if @user.nil?
+        # userが存在しない時
+        response_not_found('user')
+      else
+        @user.twitter_id = params[:twitterID]
+        @user.github_id = params[:githubID]
+        @user.save
+        response_success(:user, :update)
+      end
     end
   end
 end
