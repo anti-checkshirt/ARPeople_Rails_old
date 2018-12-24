@@ -62,35 +62,41 @@ class Api::V1::SearchController < ApplicationController
     
     def show
       @image = params[:image]
-      # ランダムな文字列を生成
-      @uuid = SecureRandom.uuid
-      @image_name = "#{@uuid}.jpeg"
-      @save_dir = "public/#{@uuid}"
-
-      # フォルダが存在しない場合生成
-      # フォルダが既に存在する場合は何もしない
-      FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
-      @save_path = "#{@save_dir}/#{@image_name}"
-      # 画像の保存
-      File.binwrite(@save_path, @image.read)
-
-      # 顔を切り取ってその顔のface_idを受け取る
-      @face_id = detect_face(
-        "http://ip:3000/api/v1/image/?user_id=#{@uuid}&image_name=#{@image_name}")
-      
-      # 顔の判定をし、判定結果を受け取る
-      @person_id = identify_person(@face_id)[0]["candidates"][0]["personId"]
-
-      @id = get_name_by_person_id(@person_id)["name"]
-      
-      # @idがUserにあるか探す
-      @user = User.find_by(id: @id)
-      
-      if @user.nil?
-        render json: '{"404":"Not found."}'
+      if @image.nil?
+        # パラメータにimageが含まれない時
+        response_bad_request
       else
-        render json: @user
-        File.delete(path)
+        # ランダムな文字列を生成
+        @uuid = SecureRandom.uuid
+        @image_name = "#{@uuid}.jpeg"
+        @save_dir = "public/#{@uuid}"
+
+        # フォルダが存在しない場合生成
+        # フォルダが既に存在する場合は何もしない
+        FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
+        @save_path = "#{@save_dir}/#{@image_name}"
+        # 画像の保存
+        File.binwrite(@save_path, @image.read)
+
+        # 顔を切り取ってその顔のface_idを受け取る
+        @face_id = detect_face(
+          "http://ip:3000/api/v1/image/?user_id=#{@uuid}&image_name=#{@image_name}")
+        
+        # 顔の判定をし、判定結果を受け取る
+        @person_id = identify_person(@face_id)[0]["candidates"][0]["personId"]
+
+        @id = get_name_by_person_id(@person_id)["name"]
+        
+        # @idがUserにあるか探す
+        @user = User.find_by(id: @id)
+        
+        if @user.nil?
+          # userが存在しない時
+          response_not_found('user')
+        else
+          render json: @user
+          File.delete(path)
+        end
       end
     end
 end
