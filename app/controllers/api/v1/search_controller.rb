@@ -101,4 +101,11 @@ class Api::V1::SearchController < ApplicationController
       end
     end
   end
+
+  def authenticate
+    authenticate_or_request_with_http_token do |token, _options|
+      @auth_user = User.find_by(access_token: token)
+      !@auth_user.nil? ? true : false
+    end
+  end
 end
