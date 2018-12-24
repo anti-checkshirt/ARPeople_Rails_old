@@ -1,16 +1,22 @@
 require 'securerandom'
 
+class User < ActiveRecord::Base
+  has_secure_token :access_token
+end
+
 class Api::V1::UserController < ApplicationController
   def create
+    @uuid = SecureRandom.urlsafe_base64(32)
     @user = User.new(
       name: params[:name],
       email: params[:email],
       password_digest: params[:password],
-      age: params[:age],
-      user_image_url: params[:userImage],
+      age: nil,
+      user_image_url: nil,
       twitter_id: nil,
       github_id: nil,
-      person_id: nil
+      person_id: nil,
+      uuid: @uuid
       )
     if @user.save
       render json: @user
@@ -35,5 +41,17 @@ class Api::V1::UserController < ApplicationController
         response_success(:user, :update)
       end
     end
+  end
+
+  def login
+
+  end
+  
+  def user
+
+  end
+
+  def image
+
   end
 end
