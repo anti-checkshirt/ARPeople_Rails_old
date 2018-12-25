@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 end
 
 class Api::V1::UserController < ApplicationController
+  # 新規登録
   def create
     @uuid = SecureRandom.urlsafe_base64(32)
     @user = User.new(
@@ -24,6 +25,8 @@ class Api::V1::UserController < ApplicationController
       response_bad_request
 　  end
   end
+
+  # アカウント情報変更
   def update
     @id = params[:id]
     if @id.nil?
@@ -43,14 +46,17 @@ class Api::V1::UserController < ApplicationController
     end
   end
 
+  # ログイン
   def login
 
   end
   
+  #ユーザーのアカウント取得
   def user
 
   end
 
+  # プロフィール画像登録
   def image
 
   end
