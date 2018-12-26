@@ -52,6 +52,13 @@ class Api::V1::UserController < ApplicationController
   def login
     # メールアドレスの検索
     # パスワード検索
+    @user = User.find_by(email: params[:email], password_digest: params[:password])
+    p @user
+    if @user
+      return render json: @user
+    else
+      return response_bad_request
+    end
   end
   
   #ユーザーのアカウント取得
