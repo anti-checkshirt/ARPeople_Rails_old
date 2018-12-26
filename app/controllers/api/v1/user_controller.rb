@@ -28,36 +28,46 @@ class Api::V1::UserController < ApplicationController
 
   # アカウント情報変更
   def update
-    @id = params[:id]
-    if @id.nil?
-      # パラメータにidが含まれていない時
+    @token = request.headers["Authorization"]
+    @user = User.find_by(access_token: @token)
+    if @user == nil 
       response_bad_request
+    end
+    @user.name = params[:name]
+    @user.email = params[:email]
+    @user.twitter_id = params[:twitterID]
+    @user.github_id = params[:githubID]
+    @user.age = params[:age]
+
+    if @user.save
+      render json: @user
     else
-      @user = User.find_by(id: @id)
-      if @user.nil?
-        # userが存在しない時
-        response_not_found('user')
-      else
-        @user.twitter_id = params[:twitterID]
-        @user.github_id = params[:githubID]
-        @user.save
-        response_success(:user, :update)
-      end
+      response_internal_server_error
     end
   end
 
   # ログイン
   def login
-
+    # メールアドレスの検索
+    # パスワード検索
   end
   
   #ユーザーのアカウント取得
-  def user
-
+  def data
+    # Headerからアクセストークンを取る
+    # Tokenを検索
+    # userを返す
+    @token = request.header["TOKEN"]
+    puts request.header
+    @user = find_by(access_token: @token)
+    p @user
+    render @user
   end
 
   # プロフィール画像登録
   def image
-
+    # Headerからユーザーを特定
+    # 画像を保存する
+    # URLを返す
   end
 end
