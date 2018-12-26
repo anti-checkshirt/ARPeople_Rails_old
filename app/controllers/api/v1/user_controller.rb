@@ -21,8 +21,10 @@ class Api::V1::UserController < ApplicationController
       )
     if @user.save
       render json: @user
+      return
     else 
       response_bad_request
+      return
 　  end
   end
 
@@ -30,8 +32,8 @@ class Api::V1::UserController < ApplicationController
   def update
     @token = request.headers["Authorization"]
     @user = User.find_by(access_token: @token)
-    if @user == nil 
-      response_bad_request
+    if @user == nil
+      return response_bad_request
     end
     @user.name = params[:name]
     @user.email = params[:email]
@@ -40,9 +42,9 @@ class Api::V1::UserController < ApplicationController
     @user.age = params[:age]
 
     if @user.save
-      render json: @user
+      return render json: @user
     else
-      response_internal_server_error
+      return response_internal_server_error
     end
   end
 
