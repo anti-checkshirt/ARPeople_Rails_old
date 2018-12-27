@@ -71,7 +71,7 @@ class Api::V1::SettingController < ApplicationController
                     params[:image8],
                     params[:image9],
                     params[:image10]]
-
+                    
     @uuid = @auth_user.uuid
     @save_dir = "public/#{@uuid}"
     @person_id = create_person(@uuid)
