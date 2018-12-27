@@ -50,10 +50,7 @@ class Api::V1::UserController < ApplicationController
 
   # ログイン
   def login
-    # メールアドレスの検索
-    # パスワード検索
     @user = User.find_by(email: params[:email], password_digest: params[:password])
-    p @user
     if @user
       return render json: @user
     else
@@ -62,15 +59,13 @@ class Api::V1::UserController < ApplicationController
   end
   
   #ユーザーのアカウント取得
-  def data
-    # Headerからアクセストークンを取る
-    # Tokenを検索
-    # userを返す
-    @token = request.header["TOKEN"]
-    puts request.header
-    @user = find_by(access_token: @token)
-    p @user
-    render @user
+  def show
+    @user = User.find_by(access_token: request.headers["Authorization"])
+    if @user
+      return render json: @user
+    else
+      return response_bad_request
+    end
   end
 
   # プロフィール画像登録
