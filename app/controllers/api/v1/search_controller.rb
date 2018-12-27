@@ -68,7 +68,7 @@ class Api::V1::SearchController < ApplicationController
       response_bad_request
     else
       # ランダムな文字列を生成
-      @uuid = SecureRandom.urlsafe_base64(10)
+      @uuid = SecureRandom.urlsafe_base64(32)
       @image_name = "#{@uuid}.jpeg"
       @save_dir = "public/#{@uuid}"
 
@@ -81,7 +81,7 @@ class Api::V1::SearchController < ApplicationController
 
       # 顔を切り取ってその顔のface_idを受け取る
       @face_id = detect_face(
-        "http://ip:3000/#{@uuid}/#{@image_name}"
+        "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       )
 
       # 顔の判定をし、判定結果を受け取る
@@ -99,6 +99,13 @@ class Api::V1::SearchController < ApplicationController
         render json: @user
         File.delete(path)
       end
+    end
+  end
+
+  def authenticate
+    authenticate_or_request_with_http_token do |token, _options|
+      @auth_user = User.find_by(access_token: token)
+      !@auth_user.nil? ? true : false
     end
   end
 end
