@@ -22,6 +22,7 @@ class Api::V1::UserController < ApplicationController
     if @user.sav
       return render json: @user
     else 
+      
       return response_bad_request
 　  end
   end
