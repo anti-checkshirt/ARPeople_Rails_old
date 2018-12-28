@@ -19,10 +19,9 @@ class Api::V1::UserController < ApplicationController
       person_id: "",
       uuid: @uuid
       )
-    if @user.sav
+    if @user.save
       return render json: @user
-    else 
-      
+    else
       return response_bad_request
 　  end
   end
