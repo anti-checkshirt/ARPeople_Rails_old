@@ -80,7 +80,6 @@ class Api::V1::UserController < ApplicationController
       @save_dir = "public/#{@uuid}"
       FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
 
-
       @image_name = SecureRandom.uuid
       @image = params[:image]
       @image_name = "#{@image_name}.jpeg"
@@ -93,7 +92,5 @@ class Api::V1::UserController < ApplicationController
         return response_internal_server_error
       end
     end
-
-    
   end
 end
