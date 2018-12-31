@@ -88,7 +88,7 @@ class Api::V1::SettingController < ApplicationController
       image_params.each do |image_param|
         # ランダムな文字列を生成
         # 画像の名前
-        @image_name = SecureRandom.uuid
+        @image_name = SecureRandom.alphanumeric(30)
 
         @image = image_param
         @image_name = "#{@image_name}.jpeg"
