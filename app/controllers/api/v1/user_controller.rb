@@ -87,7 +87,6 @@ class Api::V1::UserController < ApplicationController
       @save_path = "#{@save_dir}/#{@image_name}"
       File.binwrite(@save_path, @image.read)
       @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
-      @user.save
       if @user.save
         return render json: "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       else
