@@ -86,8 +86,13 @@ class Api::V1::UserController < ApplicationController
       @image_name = "#{@image_name}.jpeg"
       @save_path = "#{@save_dir}/#{@image_name}"
       File.binwrite(@save_path, @image.read)
-
-      return render json: "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+      @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+      @user.save
+      if @user.save
+        return render json: "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+      else
+        return response_internal_server_error
+      end
     end
 
     
