@@ -71,36 +71,38 @@ class Api::V1::SettingController < ApplicationController
                     params[:image8],
                     params[:image9],
                     params[:image10]]
-                    
-    @uuid = @auth_user.uuid
-    @save_dir = "public/#{@uuid}"
-    @person_id = create_person(@uuid)
+    if params[:image10] == nil
+      response_bad_request
+    else
+      @uuid = @auth_user.uuid
+      @save_dir = "public/#{@uuid}"
+      @person_id = create_person(@uuid)
 
-    # フォルダが既に存在する場合は何もしない
-    FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
+      # フォルダが既に存在する場合は何もしない
+      FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
 
-    # Userにperson_idを保存する
-    @auth_user.person_id = @person_id
-    @auth_user.save
+      # Userにperson_idを保存する
+      @auth_user.person_id = @person_id
+      @auth_user.save
 
-    image_params.each do |image_param|
-      # ランダムな文字列を生成
-      # 画像の名前
-      @image_name = SecureRandom.uuid
+      image_params.each do |image_param|
+        # ランダムな文字列を生成
+        # 画像の名前
+        @image_name = SecureRandom.uuid
 
-      @image = image_param
-      @image_name = "#{@image_name}.jpeg"
-      @save_path = "#{@save_dir}/#{@image_name}"
-      File.binwrite(@save_path, @image.read)
+        @image = image_param
+        @image_name = "#{@image_name}.jpeg"
+        @save_path = "#{@save_dir}/#{@image_name}"
+        File.binwrite(@save_path, @image.read)
 
-      # 画像のURLをMSのAPIに投げる
-      add_face(@person_id,
-        "http://#{request.host_with_port}/#{@uuid}/#{@image_name}")
-    end
+        # 画像のURLをMSのAPIに投げる
+        add_face(@person_id,
+          "http://#{request.host_with_port}/#{@uuid}/#{@image_name}")
+      end
 
-    # 学習開始
-    train()
-    response_success(:setting, :show)
+      # 学習開始
+      train()
+      response_success(:setting, :show)
   end
 
   def authenticate
