@@ -74,12 +74,8 @@ class Api::V1::UserController < ApplicationController
 
   # プロフィール画像登録
   def image
-    # Headerからユーザーを特定
-    # 画像を保存する
-    # URLを返す
-    @token = request.headers["Authorization"]
-    @user = User.find_by(access_token: @token)
-    if @user == nil?
+    @user = User.find_by(access_token: request.headers["Authorization"])
+    if @user == nil
       return response_bad_request
     else
       @uuid = @user.uuid
@@ -87,13 +83,13 @@ class Api::V1::UserController < ApplicationController
       FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
 
       @image_name = SecureRandom.uuid
-      @image = params[:image]
       @image_name = "#{@image_name}.jpeg"
+      @image = params[:image]
       @save_path = "#{@save_dir}/#{@image_name}"
       File.binwrite(@save_path, @image.read)
       @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       if @user.save
-        return render json: "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+        return render json: @user
       else
         return response_internal_server_error
       end
