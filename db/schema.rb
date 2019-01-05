@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_15_073330) do
+ActiveRecord::Schema.define(version: 2019_01_05_102639) do
 
-# Could not dump table "users" because of following StandardError
-#   Unknown type 'fixnum' for column 'age'
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
+    t.string "access_token"
+    t.string "uuid"
+    t.string "twitter_id"
+    t.string "github_id"
+    t.string "person_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "age"
+    t.string "user_image_url"
+    t.string "profile_message"
+    t.string "job"
+    t.string "phone_number"
+  end
 
 end

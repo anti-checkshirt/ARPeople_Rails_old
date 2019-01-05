@@ -1,69 +1,74 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'json'
 require 'securerandom'
 class Api::V1::SearchController < ApplicationController
+  # image_url内から顔のみを切り取る
+  def detect_face(image_url)
+    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')
+    uri.query = URI.encode_www_form(
+      # Request parameters
+      'returnFaceId' => 'true',
+      'returnFaceLandmarks' => 'false'
+    )
+    request = Net::HTTP::Post.new(uri.request_uri)
 
-    # image_url内から顔のみを切り取る
-    def detect_face(image_url)
-        uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')
-        uri.query = URI.encode_www_form({
-            # Request parameters
-            'returnFaceId' => 'true',
-            'returnFaceLandmarks' => 'false',
-        })
-        request = Net::HTTP::Post.new(uri.request_uri)
+    # headerをセット
+    request['Content-Type'] = 'application/json'
+    request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
 
-        # headerをセット
-        request['Content-Type'] = 'application/json'
-        request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
-        
-        request.body = "{'url': '#{image_url}'}"
-        response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-            http.request(request)
-        end
-        return JSON.parse(response.body)[0]["faceId"]
+    request.body = "{'url': '#{image_url}'}"
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
     end
-    
-    # 切り取った顔の画像を判定する
-    def identify_person(detected_faceId)
-        uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/identify')
-        uri.query = URI.encode_www_form({
-        })
-        
-        request = Net::HTTP::Post.new(uri.request_uri)
+    JSON.parse(response.body)[0]['faceId']
+  end
 
-        # headerをセット
-        request['Content-Type'] = 'application/json'
-        request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
+  # 切り取った顔の画像を判定する
+  def identify_person(detected_faceId)
+    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/identify')
+    uri.query = URI.encode_www_form({
+                                    })
 
-        request.body = "{'personGroupId': 'test_people', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
-        response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-            http.request(request)
-        end
-        return JSON.parse(response.body)
+    request = Net::HTTP::Post.new(uri.request_uri)
+
+    # headerをセット
+    request['Content-Type'] = 'application/json'
+    request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
+
+    request.body = "{'personGroupId': 'test_people', 'faceIds': ['#{detected_faceId}'], 'maxNumOfCandidatesReturned': 1, 'confidenceThreshold': 0.5 }"
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
+    end
+    JSON.parse(response.body)
+  end
+
+  # identify_personから返ってきたperson_idから名前を取得する
+  def get_name_by_person_id(person_id)
+    uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
+    uri.query = URI.encode_www_form({
+                                    })
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    # headerをセット
+    request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
+
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
     end
 
-    # identify_personから返ってきたperson_idから名前を取得する
-    def get_name_by_person_id(person_id)
-        uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
-        uri.query = URI.encode_www_form({
-        })
-        request = Net::HTTP::Get.new(uri.request_uri)
+    JSON.parse(response.body)
+  end
 
-        # headerをセット
-        request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
-
-        response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-            http.request(request)
-        end
-        
-        return JSON.parse(response.body)
-    end
-    
-    def show
-      @image = params[:image]
+  def show
+    @image = params[:image]
+    if @image.nil?
+      # パラメータにimageが含まれない時
+      response_bad_request
+    else
       # ランダムな文字列を生成
-      @uuid = SecureRandom.uuid
+      @uuid = SecureRandom.urlsafe_base64(32)
       @image_name = "#{@uuid}.jpeg"
       @save_dir = "public/#{@uuid}"
 
@@ -76,21 +81,31 @@ class Api::V1::SearchController < ApplicationController
 
       # 顔を切り取ってその顔のface_idを受け取る
       @face_id = detect_face(
-        "http://ip:3000/api/v1/image/?user_id=#{@uuid}&image_name=#{@image_name}")
-      
-      # 顔の判定をし、判定結果を受け取る
-      @person_id = identify_person(@face_id)[0]["candidates"][0]["personId"]
+        "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+      )
 
-      @id = get_name_by_person_id(@person_id)["name"]
-      
+      # 顔の判定をし、判定結果を受け取る
+      @person_id = identify_person(@face_id)[0]['candidates'][0]['personId']
+
+      @id = get_name_by_person_id(@person_id)['name']
+
       # @idがUserにあるか探す
       @user = User.find_by(id: @id)
-      
+
       if @user.nil?
-        render json: '{"404":"Not found."}'
+        # userが存在しない時
+        response_not_found('user')
       else
         render json: @user
         File.delete(path)
       end
     end
+  end
+
+  def authenticate
+    authenticate_or_request_with_http_token do |token, _options|
+      @auth_user = User.find_by(access_token: token)
+      !@auth_user.nil? ? true : false
+    end
+  end
 end
