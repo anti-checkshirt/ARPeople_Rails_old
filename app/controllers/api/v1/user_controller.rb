@@ -78,14 +78,11 @@ class Api::V1::UserController < ApplicationController
     if @user == nil
       return response_bad_request
     else
-      @uuid = @user.uuid
-      @save_dir = "public/#{@uuid}"
+      @save_dir = "public/#{@user.uuid}"
       FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
-
-      @image_name = SecureRandom.uuid
-      @image_name = "#{@image_name}.jpeg"
+      
+      @save_path = "#{@save_dir}/#{@user.uuid}.jpeg"
       @image = params[:image]
-      @save_path = "#{@save_dir}/#{@image_name}"
       File.binwrite(@save_path, @image.read)
       @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       if @user.save
