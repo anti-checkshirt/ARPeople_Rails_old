@@ -17,6 +17,9 @@ class Api::V1::UserController < ApplicationController
       twitter_id: "",
       github_id: "",
       person_id: "",
+      job: "",
+      profile_message: "",
+      phone_number: "",
       uuid: @uuid
       )
     if @user.save
@@ -38,6 +41,9 @@ class Api::V1::UserController < ApplicationController
     @user.twitter_id = params[:twitterID]
     @user.github_id = params[:githubID]
     @user.age = params[:age]
+    @user.job = params[:job]
+    @user.profile_message = params[:profileMessage]
+    @user.phone_number = params[:phoneNumber]
 
     if @user.save
       return render json: @user
@@ -68,26 +74,19 @@ class Api::V1::UserController < ApplicationController
 
   # プロフィール画像登録
   def image
-    # Headerからユーザーを特定
-    # 画像を保存する
-    # URLを返す
-    @token = request.headers["Authorization"]
-    @user = User.find_by(access_token: @token)
-    if @user == nil?
+    @user = User.find_by(access_token: request.headers["Authorization"])
+    if @user == nil
       return response_bad_request
     else
-      @uuid = @user.uuid
-      @save_dir = "public/#{@uuid}"
+      @save_dir = "public/#{@user.uuid}"
       FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
-
-      @image_name = SecureRandom.uuid
+      
+      @save_path = "#{@save_dir}/#{@user.uuid}.jpeg"
       @image = params[:image]
-      @image_name = "#{@image_name}.jpeg"
-      @save_path = "#{@save_dir}/#{@image_name}"
       File.binwrite(@save_path, @image.read)
       @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       if @user.save
-        return render json: "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+        return render json: @user
       else
         return response_internal_server_error
       end
