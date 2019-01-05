@@ -17,6 +17,9 @@ class Api::V1::UserController < ApplicationController
       twitter_id: "",
       github_id: "",
       person_id: "",
+      job: "",
+      profile_message: "",
+      phone_number: "",
       uuid: @uuid
       )
     if @user.save
@@ -38,6 +41,9 @@ class Api::V1::UserController < ApplicationController
     @user.twitter_id = params[:twitterID]
     @user.github_id = params[:githubID]
     @user.age = params[:age]
+    @user.job = params[:job]
+    @user.profile_message = params[:profileMessage]
+    @user.phone_number = params[:phoneNumber]
 
     if @user.save
       return render json: @user
