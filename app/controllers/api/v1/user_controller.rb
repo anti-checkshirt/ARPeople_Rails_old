@@ -1,9 +1,4 @@
 require 'securerandom'
-
-class User < ActiveRecord::Base
-  has_secure_token :access_token
-end
-
 class Api::V1::UserController < ApplicationController
   # 新規登録
   def create
