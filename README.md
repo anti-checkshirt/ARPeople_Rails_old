@@ -248,6 +248,34 @@
 
 
 
+# その他
+
+## `POST` api/v1/info
+
+### お問い合わせ
+
+#### Parameter
+
+|    Key     |       Value        |
+| :--------: | :----------------: |
+| deviceName |      iPhoneXs      |
+| appVersion | アプリのバージョン |
+|    name    |        Name        |
+|  message   |  お問い合わせ内容  |
+|  infoType  |       String       |
+
+
+
+#### Response
+
+```
+{
+    "message": "OK"
+}
+```
+
+
+
 # テーブル
 
 | User           |
@@ -260,4 +288,3 @@
 | github_id      |
 | person_id      |
 | user_image_url |
-
