@@ -28,3 +28,5 @@
 
 /public/
 !/public/robots.txt
+
+/.idea
