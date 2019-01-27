@@ -6,7 +6,7 @@ require 'securerandom'
 class Api::V1::SearchController < ApplicationController
   # image_url内から顔のみを切り取る
   def detect_face(image_url)
-    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect')
+    uri = URI(Setting.ar_people.ms_api[:detect])
     uri.query = URI.encode_www_form(
       # Request parameters
       'returnFaceId' => 'true',
@@ -27,7 +27,7 @@ class Api::V1::SearchController < ApplicationController
 
   # 切り取った顔の画像を判定する
   def identify_person(detected_faceId)
-    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/identify')
+    uri = URI(Setting.ar_people.ms_api[:identify_person])
     uri.query = URI.encode_www_form({
                                     })
 
@@ -46,7 +46,7 @@ class Api::V1::SearchController < ApplicationController
 
   # identify_personから返ってきたperson_idから名前を取得する
   def get_name_by_person_id(person_id)
-    uri = URI("https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/#{person_id}")
+    uri = URI(Setting.ar_people.ms_api[:get_name_by_person_id]+person_id)
     uri.query = URI.encode_www_form({
                                     })
     request = Net::HTTP::Get.new(uri.request_uri)

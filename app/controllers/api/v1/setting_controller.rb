@@ -11,7 +11,7 @@ class Api::V1::SettingController < ApplicationController
 
   # グループにPersonを登録
   def create_person(person_name)
-    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons')
+    uri = URI(Setting.ar_people.ms_api[:create_person])
     uri.query = URI.encode_www_form({})
     request = Net::HTTP::Post.new(uri.request_uri)
 
@@ -47,7 +47,7 @@ class Api::V1::SettingController < ApplicationController
 
   # 学習開始
   def train
-    uri = URI('https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/train')
+    uri = URI(Setting.ar_people.ms_api[:train])
     uri.query = URI.encode_www_form({})
     request = Net::HTTP::Post.new(uri.request_uri)
 
@@ -72,7 +72,7 @@ class Api::V1::SettingController < ApplicationController
                     params[:image9],
                     params[:image10]]
     if params[:image10] == nil
-      response_bad_request
+      return response_bad_request
     else
       @uuid = @auth_user.uuid
       @save_dir = "public/#{@uuid}"

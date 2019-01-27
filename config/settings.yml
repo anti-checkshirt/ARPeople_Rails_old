@@ -1,0 +1,7 @@
+ar_people:
+  ms_api_:
+    create_person: 'https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons'
+    train: 'https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/train'
+    detect: 'https://japaneast.api.cognitive.microsoft.com/face/v1.0/detect'
+    identify_person: 'https://japaneast.api.cognitive.microsoft.com/face/v1.0/identify'
+    get_name_by_person_id: 'https://japaneast.api.cognitive.microsoft.com/face/v1.0/persongroups/test_people/persons/'
