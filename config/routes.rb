@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       post "user_image" => "user#image"
       post "images" => "setting#show"
       post "search" => "search#show"
+      get 'test' => 'api#index'
     end
   end
 end
