@@ -53,3 +53,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'has_secure_token'
 
 gem 'rubocop'
+
+gem 'config'
