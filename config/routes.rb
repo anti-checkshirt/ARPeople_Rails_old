@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   namespace :api, {format: 'json'} do
     namespace :v1 do
       post "register" => "user#create"
@@ -10,4 +11,8 @@ Rails.application.routes.draw do
       post "search" => "search#show"
     end
   end
+
+  get '/service' => 'main#service'
+  get '/privacy' => 'main#privacy'
+  get '/' => 'main#index'
 end
