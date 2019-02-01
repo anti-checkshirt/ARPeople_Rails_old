@@ -42,7 +42,7 @@ class Api::V1::SettingController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    response.body
+    return JSON.parse(response.body)
   end
 
   # 学習開始
