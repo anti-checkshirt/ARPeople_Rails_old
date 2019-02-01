@@ -16,7 +16,8 @@ class Api::V1::UserController < ApplicationController
       profile_message: "",
       phone_number: "",
       uuid: @uuid
-      )
+    )
+
     if @user.save
       return render json: @user
     else
