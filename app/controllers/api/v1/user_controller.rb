@@ -6,7 +6,7 @@ class Api::V1::UserController < ApplicationController
     @user = User.new(
       name: params[:name],
       email: params[:email],
-      password_digest: params[:password],
+      password: params[:password],
       age: "",
       user_image_url: "",
       twitter_id: "",
