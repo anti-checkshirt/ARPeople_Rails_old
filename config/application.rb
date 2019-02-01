@@ -19,6 +19,7 @@ Bundler.require(*Rails.groups)
 
 module ARPeopleRails
   class Application < Rails::Application
+    config.filter_parameters += ['password', 'email']
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
