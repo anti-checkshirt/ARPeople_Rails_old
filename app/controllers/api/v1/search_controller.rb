@@ -22,7 +22,7 @@ class Api::V1::SearchController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    JSON.parse(response.body)[0]['faceId']
+    return JSON.parse(response.body)[0]['faceId']
   end
 
   # 切り取った顔の画像を判定する
@@ -41,7 +41,7 @@ class Api::V1::SearchController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    JSON.parse(response.body)
+    return JSON.parse(response.body)
   end
 
   # identify_personから返ってきたperson_idから名前を取得する
@@ -58,7 +58,7 @@ class Api::V1::SearchController < ApplicationController
       http.request(request)
     end
 
-    JSON.parse(response.body)
+    return JSON.parse(response.body)
   end
 
   def show
