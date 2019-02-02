@@ -6,7 +6,7 @@ require 'securerandom'
 class Api::V1::SearchController < ApplicationController
   # image_url内から顔のみを切り取る
   def detect_face(image_url)
-    uri = URI(Setting.ar_people.ms_api[:detect])
+    uri = URI(Settings.ar_people.detect)
     uri.query = URI.encode_www_form(
       # Request parameters
       'returnFaceId' => 'true',
@@ -22,12 +22,12 @@ class Api::V1::SearchController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    JSON.parse(response.body)[0]['faceId']
+    return JSON.parse(response.body)[0]['faceId']
   end
 
   # 切り取った顔の画像を判定する
   def identify_person(detected_faceId)
-    uri = URI(Setting.ar_people.ms_api[:identify_person])
+    uri = URI(Settings.ar_people.identify_person)
     uri.query = URI.encode_www_form({
                                     })
 
@@ -41,12 +41,12 @@ class Api::V1::SearchController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    JSON.parse(response.body)
+    return JSON.parse(response.body)
   end
 
   # identify_personから返ってきたperson_idから名前を取得する
   def get_name_by_person_id(person_id)
-    uri = URI(Setting.ar_people.ms_api[:get_name_by_person_id]+person_id)
+    uri = URI(Settings.ar_people.get_name_by_person_id+person_id)
     uri.query = URI.encode_www_form({
                                     })
     request = Net::HTTP::Get.new(uri.request_uri)
@@ -58,7 +58,7 @@ class Api::V1::SearchController < ApplicationController
       http.request(request)
     end
 
-    JSON.parse(response.body)
+    return JSON.parse(response.body)
   end
 
   def show
