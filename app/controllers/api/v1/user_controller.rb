@@ -72,19 +72,32 @@ class Api::V1::UserController < ApplicationController
     @user = User.find_by(access_token: request.headers["Authorization"])
     if @user == nil
       return response_bad_request
-    else
-      @save_dir = "public/#{@user.uuid}"
-      FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
-      
-      @save_path = "#{@save_dir}/#{@user.uuid}.jpeg"
-      @image = params[:image]
-      File.binwrite(@save_path, @image.read)
-      @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
-      if @user.save
-        return render json: @user
-      else
-        return response_internal_server_error
-      end
     end
+    @save_dir = "public/#{@user.uuid}"
+    FileUtils.mkdir_p(@save_dir) unless FileTest.exist?(@save_dir)
+      
+    @save_path = "#{@save_dir}/#{@user.uuid}.jpeg"
+    @image = params[:image]
+    File.binwrite(@save_path, @image.read)
+    @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
+    if @user.save
+      return render json: @user
+    else
+      return response_internal_server_error
+    end
+  end
+
+  # パスワード変更
+  def password
+    @user = User.find_by(access_token: request.headers["Authorization"])
+    if @user == nil
+      return response_bad_request
+    end
+    if @user.password_digest != params[:oldPassword]
+      return response_bad_request
+    end
+    @user.password_digest = params[:newPassword]
+    @user.save
+    return render json: @user
   end
 end
