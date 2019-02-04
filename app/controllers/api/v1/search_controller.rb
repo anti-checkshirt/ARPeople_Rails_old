@@ -96,7 +96,19 @@ class Api::V1::SearchController < ApplicationController
         # userが存在しない時
         response_not_found('user')
       else
-        render json: @user
+        user = {
+            :name => @user.name,
+            :email => @user.email,
+            :twitter_id => @user.twitter_id,
+            :github_id => @user.github_id,
+            :age => @user.age,
+            :job => @user.job,
+            :profile_message => @user.profile_message,
+            :profile_number => @user.phone_number
+        }
+
+        user = user.to_json
+        render json: user
         File.delete(path)
       end
     end
