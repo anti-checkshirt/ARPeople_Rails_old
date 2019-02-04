@@ -107,7 +107,6 @@ class Api::V1::SearchController < ApplicationController
             :profile_number => @user.phone_number
         }
 
-        user = user.to_json
         render json: user
         File.delete(path)
       end

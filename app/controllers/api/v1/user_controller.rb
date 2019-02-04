@@ -20,7 +20,18 @@ class Api::V1::UserController < ApplicationController
     )
 
     if @user.save
-      return render json: @user
+      user = {
+          :name => @user.name,
+          :email => @user.email,
+          :twitter_id => @user.twitter_id,
+          :github_id => @user.github_id,
+          :age => @user.age,
+          :job => @user.job,
+          :profile_message => @user.profile_message,
+          :profile_number => @user.phone_number
+      }
+      p user
+      return render json: user
     else
       return response_bad_request
 　  end
@@ -54,7 +65,6 @@ class Api::V1::UserController < ApplicationController
         :profile_number => @user.phone_number
       }
 
-      user = user.to_json
       return render json: user
     else
       return response_internal_server_error
@@ -76,7 +86,6 @@ class Api::V1::UserController < ApplicationController
           :profile_number => @user.phone_number
       }
 
-      user = user.to_json
       return render json: user
     else
       return response_bad_request
@@ -98,7 +107,6 @@ class Api::V1::UserController < ApplicationController
           :profile_number => @user.phone_number
       }
 
-      user = user.to_json
       return render json: user
     else
       return response_bad_request
@@ -130,7 +138,6 @@ class Api::V1::UserController < ApplicationController
             :profile_number => @user.phone_number
         }
 
-        user = user.to_json
         return render json: user
       else
         return response_internal_server_error
