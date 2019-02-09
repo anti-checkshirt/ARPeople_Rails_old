@@ -96,7 +96,8 @@ class Api::V1::SearchController < ApplicationController
         # userが存在しない時
         response_not_found('user')
       else
-        render json: @user
+        user = responce_user(@user)
+        render json: user
         File.delete(path)
       end
     end

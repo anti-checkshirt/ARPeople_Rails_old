@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'json'
 class Api::V1::UserController < ApplicationController
   # 新規登録
   def create
@@ -19,7 +20,8 @@ class Api::V1::UserController < ApplicationController
     )
 
     if @user.save
-      return render json: @user
+      user = responce_user(@user)
+      render json: user
     else
       return response_bad_request
 　  end
@@ -42,7 +44,8 @@ class Api::V1::UserController < ApplicationController
     @user.phone_number = params[:phoneNumber]
 
     if @user.save
-      return render json: @user
+      user = responce_user(@user)
+      render json: user
     else
       return response_internal_server_error
     end
@@ -52,7 +55,8 @@ class Api::V1::UserController < ApplicationController
   def login
     @user = User.find_by(email: params[:email], password_digest: params[:password])
     if @user
-      return render json: @user
+      user = responce_user(@user)
+      render json: user
     else
       return response_bad_request
     end
@@ -62,7 +66,8 @@ class Api::V1::UserController < ApplicationController
   def show
     @user = User.find_by(access_token: request.headers["Authorization"])
     if @user
-      return render json: @user
+      user = responce_user(@user)
+      render json: user
     else
       return response_bad_request
     end
@@ -82,7 +87,8 @@ class Api::V1::UserController < ApplicationController
       File.binwrite(@save_path, @image.read)
       @user.user_image_url = "http://#{request.host_with_port}/#{@uuid}/#{@image_name}"
       if @user.save
-        return render json: @user
+        user = responce_user(@user)
+        render json: user
       else
         return response_internal_server_error
       end
