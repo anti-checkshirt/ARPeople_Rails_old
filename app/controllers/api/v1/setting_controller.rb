@@ -11,7 +11,7 @@ class Api::V1::SettingController < ApplicationController
 
   # グループにPersonを登録
   def create_person(person_name)
-    uri = URI(Setting.ar_people.ms_api[:create_person])
+    uri = URI(Settings.ar_people.create_person)
     uri.query = URI.encode_www_form({})
     request = Net::HTTP::Post.new(uri.request_uri)
 
@@ -23,7 +23,7 @@ class Api::V1::SettingController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    JSON.parse(response.body)['personId']
+    return JSON.parse(response.body)['personId']
   end
 
   # Personに学習したい顔を追加
@@ -34,7 +34,7 @@ class Api::V1::SettingController < ApplicationController
     )
     request = Net::HTTP::Post.new(uri.request_uri)
 
-    # headerをセットs
+    # headerをセット
     request['Content-Type'] = 'application/json'
     request['Ocp-Apim-Subscription-Key'] = ENV['AZURE_TOKEN']
 
@@ -42,12 +42,12 @@ class Api::V1::SettingController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    response.body
+    return JSON.parse(response.body)
   end
 
   # 学習開始
   def train
-    uri = URI(Setting.ar_people.ms_api[:train])
+    uri = URI(Settings.ar_people.train)
     uri.query = URI.encode_www_form({})
     request = Net::HTTP::Post.new(uri.request_uri)
 
@@ -57,7 +57,7 @@ class Api::V1::SettingController < ApplicationController
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
       http.request(request)
     end
-    response.body
+    return JSON.parse(response.body)
   end
 
   def show

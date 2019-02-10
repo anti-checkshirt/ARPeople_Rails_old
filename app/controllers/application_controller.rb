@@ -30,4 +30,17 @@ class ApplicationController < ActionController::API
     render status: 500, json: { status: 500, message: 'Internal Server Error' }
   end
 
+  def responce_user(user)
+    user = {
+        :name => user.name,
+        :email => user.email,
+        :twitter_id => user.twitter_id,
+        :github_id => user.github_id,
+        :age => user.age,
+        :job => user.job,
+        :profile_message => user.profile_message,
+        :profile_number => user.phone_number
+    }
+    return user
+  end
 end
